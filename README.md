@@ -1,15 +1,16 @@
 # trivia-api
-Trivia API
+Trivia API - Backend
 
 # technology
 - node
 - express
+- openai
 
 # coding process
 - install express
 - add nodemon (dev)
-- instal openai
-
+- install openai
+- install cors
 
 # improves
 - streaming responses

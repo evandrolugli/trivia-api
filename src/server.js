@@ -1,19 +1,24 @@
 import express from 'express';
+import cors from 'cors';
 import { openai } from '../lib/openai.js'
 
 const app = express();
+
+app.use(cors({
+    origin: '*',
+}));
+
 app.use(express.json());
 
 app.get("/", function(req, res) {
     res.send("Hello")
 })
 
-app.get('/generate-question', async (req, res) => {
-    //const { level, topic } = req.body;
-    const level = "easy";
-    const topic = "javascript"
-    //const promptMessage = `Generate a ${level} level question about ${topic}. Provide four options and indicate the correct answer.`;
-    //const prompt = `Generate a ${level} level question about ${topic}. Provide four options and indicate the correct answer. Make sure the question is clear and the answer choices are grammatically correct and relevant to the question. Don't include unnecessary prompts like "Options:.`;
+app.post('/generate-question', async (req, res) => {
+    const { level, topic } = req.body;
+    console.log(level)
+    console.log(topic)
+
     const prompt =
         `Generate a ${level} level question about ${topic}.
         Provide four options and indicate the correct answer using the following template:
@@ -36,13 +41,16 @@ app.get('/generate-question', async (req, res) => {
             ],
             max_tokens: 250, // check it out
         })
-
-        console.log(response);
+        
         const generatedText = response.choices[0].message.content.trim();
-        console.log(generatedText);
+        //console.log(response);
+        //console.log(generatedText);
 
         // Parse the generated text to a structured JSON format (pseudo code)
         const questionData = parseGeneratedText(generatedText);
+
+        console.log(questionData)
+
         res.json(questionData);
     }
     catch (error) {
@@ -62,7 +70,7 @@ function parseGeneratedText(text) {
     // Parse extracted data
     const question = questionLine ? questionLine.slice(10).trim() : null;
     const options = optionsLines.map(line => line.slice(3).trim());
-    const correctAnswer = answerLine ? answerLine.slice(17).trim() : null;
+    const correctAnswer = answerLine ? answerLine.slice(19).trim() : null;
 
     // Return structured data in JSON format
     return {
@@ -71,8 +79,6 @@ function parseGeneratedText(text) {
         correctAnswer,
     };
 }
-
-console.log(parseGeneratedText)
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, ()=> {
