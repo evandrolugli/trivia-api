@@ -1,17 +1,17 @@
-# trivia-api
-Trivia API - Backend
-
-# technology
+# Technology
+- npm (package manager)
 - node
 - express
 - openai
 
-# coding process
+# Coding
+- run: npm run dev
 - install express
 - add nodemon (dev)
 - install openai
 - install cors
 
-# improves
+# Improvement
 - streaming responses
 - add temperature
+
